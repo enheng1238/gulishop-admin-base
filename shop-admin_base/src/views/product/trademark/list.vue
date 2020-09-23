@@ -179,7 +179,12 @@ export default {
 
     // 点击添加按钮
     showAddDialog(){
-        this.isShowDialog = true
+        this.isShowDialog = true 
+        // 最后添加这个解决完成后数据依然存在在form当中的bug
+        this.form = {
+          tmName:"",
+          logoUrl:''
+        }
     },
 
     handleSizeChange(size) {
@@ -188,8 +193,7 @@ export default {
     },
 
     // 上传成功的回调
-    handleAvatarSuccess(res, file) {
-      /**
+     /**
        * res 返回的响应
        * 上传成功后,会返回上传成功的图片的真实的路径
        * 我们需要做的很简单 就是把这个图片的路径赶紧收集起来
@@ -199,8 +203,8 @@ export default {
        * 
        * this.imageUrl = URL.createObjectURL(file.raw)  拿的是图片的本地路径,假的路径
        */
-     
-        console.log(res,file,URL.createObjectURL(file.raw))
+    handleAvatarSuccess(res, file) {
+        // console.log(res,file,URL.createObjectURL(file.raw))
         this.form.logoUrl = res.data
       },
     // 上传之前的回调
