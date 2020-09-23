@@ -47,8 +47,7 @@ export default {
     // GET /admin/product/baseTrademark/{page}/{limit}
     // 分页列表
     getPageList(page,limit){
-        //对象写法
         return request.get(`/admin/product/baseTrademark/${page}/${limit}`)
-    }
+      }
 
 }

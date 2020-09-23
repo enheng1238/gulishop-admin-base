@@ -31,6 +31,22 @@
 <script>
 export default {
   name: 'Trademark',
+  data() {
+    return {
+      page:1,
+      limit:3,
+      trademarkList:[]
+    }
+  },
+  mounted() {
+    this.getTrademarkList()
+  },
+  methods:{
+    getTrademarkList(){
+      this.$API.trademark.getPageList(this.page,this.limit)
+    }
+  }
+
 }
 </script>
 

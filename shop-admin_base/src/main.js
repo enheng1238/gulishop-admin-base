@@ -41,6 +41,7 @@ import * as API from '@/api'
 import HintButton from '@/components/HintButton'
 import CategorySelector from '@/components/CategorySelector'
 
+
 // 注册全局组件
 Vue.component('HintButton', HintButton)
 Vue.component('CategorySelector', CategorySelector)
