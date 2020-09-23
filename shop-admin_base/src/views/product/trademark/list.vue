@@ -20,35 +20,39 @@
       row 代表某一个trademarkList对象
       $index 
       用到作用域插槽 prop可以不写
-     -->
+
+      table是用来展示数据的  且是用来展示列表数据的 给一个数组 这个数组要在table中的data属性中去写 
+      这个data属性用来接收传过来的数组的,当你把你的数组给了这个data之后,就不需要操心人家是怎么去遍历、循环的,
+      因为列表身上已经有循环了,这个循环在每一个列身上,data给每一个列都传了一份 ,
+      每一个列拿到data数据之后会对每一个数据进行遍历，内部进行遍历
+
+    -->
     <el-table :data="trademarkList" style="width:100%;margin:20px 0;" border stripe>
       <el-table-column type="index" label="序号" width="80" align="center"></el-table-column>
       <el-table-column prop="tmName" label="品牌名称" width="width"></el-table-column>
       <el-table-column label="品牌LOGO" width="width">
         <template slot-scope="{row,$index}">
-          <img :src="row.logoUrl" alt style="width:100px;height:60px;">
+          <img :src="row.logoUrl" alt style="width:100px;height:60px;" />
         </template>
       </el-table-column>
-      <el-table-column  label="操作" width="width">
+      <el-table-column label="操作" width="width">
         <template slot-scope="{row,$index}">
-          <el-button type="warning" icon="el-icon-edit" size="mini" >修改</el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" >删除</el-button>
-
+          <el-button type="warning" icon="el-icon-edit" size="mini">修改</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
 
     <!-- 3.分页器 -->
     <!-- 3.1先写静态页面先把动态数据干掉 -->
-    <!--   @size-change="handleSizeChange"
-      @current-change="getTrademarkList" -->
 
     <el-pagination
-    
+      @size-change="handleSizeChange"
+      @current-change="getTrademarkList"
       style="text-align:center"
-      :current-page="1"
-      :page-sizes="[10, 20, 50]"
-      :page-size="10"
+      :current-page="page"
+      :page-sizes="[3, 5, 10]"
+      :page-size="limit"
       layout="prev, pager, next, jumper,->, sizes,total"
       :total="100"
     ></el-pagination>
@@ -72,7 +76,7 @@ export default {
   },
   methods: {
     async getTrademarkList(page = 1) {
-      this.page = page
+      this.page = page;
       const result = await this.$API.trademark.getPageList(
         this.page,
         this.limit
@@ -83,6 +87,11 @@ export default {
         this.total = result.data.total;
       }
     },
+  handleSizeChange(size){
+    this.limit = size;
+    this.getTrademarkList();
+  }
+
   },
 };
 </script>
