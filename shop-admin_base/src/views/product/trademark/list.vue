@@ -35,15 +35,22 @@ export default {
     return {
       page:1,
       limit:3,
-      trademarkList:[]
+      // trademarkInfo:{},
+      trademarkList:[],
+      total:0
     }
   },
   mounted() {
     this.getTrademarkList()
   },
   methods:{
-    getTrademarkList(){
-      this.$API.trademark.getPageList(this.page,this.limit)
+    async getTrademarkList(){
+      const result = await this.$API.trademark.getPageList(this.page,this.limit)
+      if(result.code === 200){
+        // this.trademarkInfo = result.data
+        this.trademarkList = result.data.records;
+        this.total = result.data.total;
+      }
     }
   }
 
