@@ -29,7 +29,13 @@
           <img :src="row.logoUrl" alt style="width:100px;height:60px;">
         </template>
       </el-table-column>
-      <el-table-column  label="操作" width="width"></el-table-column>
+      <el-table-column  label="操作" width="width">
+        <template slot-scope="{row,$index}">
+          <el-button type="warning" icon="el-icon-edit" size="mini" >修改</el-button>
+          <el-button type="danger" icon="el-icon-delete" size="mini" >删除</el-button>
+
+        </template>
+      </el-table-column>
     </el-table>
 
     <!-- 3.分页器 -->
