@@ -206,7 +206,8 @@ export default {
        */
 
       this.isShowDialog = true
-      this.form = row//row里边会多一个id  因为数据是从数据库拿过来的
+      // this.form = row//row里边会多一个id  因为数据是从数据库拿过来的
+      this.form = {...row}
     },
 
     handleSizeChange(size) {
