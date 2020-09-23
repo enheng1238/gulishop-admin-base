@@ -51,7 +51,7 @@
       </el-table-column>
       <el-table-column label="操作" width="width">
         <template slot-scope="{ row, $index }">
-          <el-button type="warning" icon="el-icon-edit" size="mini"
+          <el-button type="warning" icon="el-icon-edit" size="mini" @click="showUpdateDialog(row)"
             >修改</el-button
           >
           <el-button type="danger" icon="el-icon-delete" size="mini"
@@ -185,6 +185,28 @@ export default {
           tmName:"",
           logoUrl:''
         }
+    },
+
+    // 点击修改按钮
+    showUpdateDialog(row){
+      /**
+       * row是trademarkList 里面的一个对象,用来展示在页面上的
+       * 我们把row的地址给力form一份  row和form就指向同一个对象,以后修改form就是在修改row,row改了，页面就会改
+       * 
+       * 
+       * 深浅拷贝 :
+       *  拷贝 --- 有另外一个内存出来 有另外一个地址出来
+       * 看对象内部的数据 如果对象内部的数据类型是基本数据类型 就没必要深拷贝
+       * 如果对象内部有个数组 那对象内部存这个数组的时候一定不是存的这个数组本身 而是数组的地址
+       * 只要数据还是同一个 那就不叫深拷贝
+       * 浅拷贝拷贝的是值 不管是什么值 地址值也是值
+       * 深拷贝拷贝的是内存
+       * 只要有关拷贝，一定新出来个内存
+       * 
+       */
+
+      this.isShowDialog = true
+      this.form = row//row里边会多一个id  因为数据是从数据库拿过来的
     },
 
     handleSizeChange(size) {
