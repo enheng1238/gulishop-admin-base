@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 1.添加按钮 -->
-    <el-button type="primary" icon="el-icon-plus">添加</el-button>
+    <el-button type="primary" icon="el-icon-plus"  @click="showAddDialog">添加</el-button>
 
     <!-- 2.表格  element-ui table 看列(序号列) -->
     <!-- 2.1写静态页面 先把动态数据全部干掉 -->
@@ -90,14 +90,43 @@
           <el-input v-model="form.tmName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="品牌LOGO" :label-width="'100px'">
+          <!-- action 上传图片的时候的上传接口 -->
+          <!-- 
+            POST /admin/product/fileUpload 
+            /dev-api
+             target: 'http://182.92.128.115', 目标服务器地址 说的就是协议ip端口
+
+            一旦代理发现你的路径是以 /dev-api 开头的,在本机发请求默认先往本机发
+            /admin/product/fileUpload 报错
+            http://localhost:9528/admin/product/fileUpload 404  默认发的
+
+            http://localhost:9528 /dev-api/admin/product/fileUpload 代理
+
+            代理看的是路径 如果是以/dev-api开头,会把target替换
+            经历代理  路径就变成
+            http://182.92.128.115/dev-api/admin/product/fileUpload 真实服务器
+            
+            changeOrigin 支不支持跨域 而且是协议ip端口任意一个不同就跨域
+            pathRewrite 重写 
+            http://182.92.128.115/admin/product/fileUpload 真实路径 最后所需要发的路径
+
+            show-file-list 针对照片墙 是否上传多张的数组 可以一次性上传多张图片
+
+            1.上传前对图片限制
+            2.上传成功后要赶紧收集返回的图片真实路径
+            3.上传成功后,upload当中img的显示
+          -->
+
           <el-upload
             class="avatar-uploader"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="/dev-api/admin/product/fileUpload"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <!-- <img v-if="imageUrl" :src="imageUrl" class="avatar" /> -->
+            <img v-if="form.logoUrl" :src="form.logoUrl" class="avatar" />
+
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
              <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
@@ -124,9 +153,10 @@ export default {
       trademarkList: [],
       total: 0,
       isShowDialog: true,
-       imageUrl: '',
+      //  imageUrl: '',
       form: {
         tmName: "",
+        logoUrl:'',
       },
     };
   },
@@ -146,26 +176,48 @@ export default {
         this.total = result.data.total;
       }
     },
+
+    // 点击添加按钮
+    showAddDialog(){
+        this.isShowDialog = true
+    },
+
     handleSizeChange(size) {
       this.limit = size;
       this.getTrademarkList();
     },
 
+    // 上传成功的回调
     handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
+      /**
+       * res 返回的响应
+       * 上传成功后,会返回上传成功的图片的真实的路径
+       * 我们需要做的很简单 就是把这个图片的路径赶紧收集起来
+       * console.log(res,file,URL.createObjectURL(file,raw))
+       * 
+       * this.form.logoURL = res.data
+       * 
+       * this.imageUrl = URL.createObjectURL(file.raw)  拿的是图片的本地路径,假的路径
+       */
+     
+        console.log(res,file,URL.createObjectURL(file.raw))
+        this.form.logoUrl = res.data
       },
+    // 上传之前的回调
       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
+        const typeArr = ["image/jpeg", "image/png"];
+        const isJPGOrPNG = typeArr.some((item) => item === file.type) ;
+        const isLt500K = file.size / 1024  < 500;
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
+        if (!isJPGOrPNG) {
+          this.$message.error('上传头像图片只能是 JPG 或 PNG 格式!');
         }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
+        if (!isLt500K) {
+          this.$message.error('上传头像图片大小不能超过 500K!');
         }
-        return isJPG && isLt2M;
+        return isJPGOrPNG && isLt500K;
       }
+  
   },
 };
 </script>
