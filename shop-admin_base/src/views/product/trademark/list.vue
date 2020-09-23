@@ -134,7 +134,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false"
+        <el-button type="primary" @click="addOrUpdateTrademark"
           >确 定</el-button
         >
       </div>
@@ -216,8 +216,31 @@ export default {
           this.$message.error('上传头像图片大小不能超过 500K!');
         }
         return isJPGOrPNG && isLt500K;
-      }
-  
+      },
+  // 点击确定按钮添加或者修改trademark的请求逻辑
+  async addOrUpdateTrademark(){
+    // 获取参数
+    let trademark = this.form
+    // 整理参数
+
+    // 发请求
+    const result = await this.$API.trademark.addOrUpdate(trademark)
+
+    if(result.code === 200){
+      // 成功干啥
+      // 1.提示 添加或者修改成功
+      this.$message.success('添加品牌成功')
+      // 2.关闭dialog
+      this.isShowDialog = false
+      // 3.重新获取列表数据展示
+      this.getTrademarkList()
+    }else{
+      // 失败干啥
+      // 提示添加或者修改失败
+      this.$message.error('添加品牌失败')
+    }
+    
+  }
   },
 };
 </script>
