@@ -71,6 +71,12 @@ export default {
 
     // 选中1级分类的时候获取二级分类列表
     async handlerCategory1(category1Id){
+      // 重新选择一级的时候 把二三级清空
+        this.cform.category2Id = ''
+        this.cform.category3Id = ''
+        this.cform.category2List = []
+        this.cform.category3List = []
+
       const result = await this.$API.category.getCategorys2(category1Id)
 
       if(result.code === 200){
@@ -80,6 +86,9 @@ export default {
 
     // 选中二级分类的时候获取三级分类列表
     async handlerCategory2(category2Id){
+      // 重新选择二级的时候 把三级清空
+        this.cform.category3Id = ''
+        this.cform.category3List = []
       const result = await this.$API.category.getCategorys3(category2Id)
       if(result.code === 200){
         this.category3List = result.data
