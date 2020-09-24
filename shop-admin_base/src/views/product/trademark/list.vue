@@ -84,7 +84,7 @@
        
     -->
     <!-- 增加和修改的dialog -->
-    <el-dialog title="添加品牌" :visible.sync="isShowDialog">
+    <el-dialog :title="form.id?'修改品牌':'添加品牌'" :visible.sync="isShowDialog">
       <el-form :model="form" style="width: 80%">
         <el-form-item label="品牌名称" :label-width="'100px'">
           <el-input v-model="form.tmName" autocomplete="off"></el-input>
@@ -152,7 +152,7 @@ export default {
       // trademarkInfo:{},
       trademarkList: [],
       total: 0,
-      isShowDialog: true,
+      isShowDialog: false,
       //  imageUrl: '',
       form: {
         tmName: "",
@@ -256,15 +256,17 @@ export default {
     if(result.code === 200){
       // 成功干啥
       // 1.提示 添加或者修改成功
-      this.$message.success('添加品牌成功')
+      this.$message.success(`${trademark.id?'修改':'添加'}品牌成功`)
       // 2.关闭dialog
       this.isShowDialog = false
       // 3.重新获取列表数据展示
-      this.getTrademarkList()
-    }else{
+      // 如果是添加 我们默认是添加在最后一页 重新获取数据也是默认拿的是第一页
+      // 但是修改  重新获取数据也应该是获取修改的那一页
+      this.getTrademarkList(trademark.id?this.page:1)
+    }else{  
       // 失败干啥
       // 提示添加或者修改失败
-      this.$message.error('添加品牌失败')
+      this.$message.error(`${trademark.id?"修改":"添加"}品牌失败`)
     }
     
   }
