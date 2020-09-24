@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <!-- 三级分类的组件 -->
-      三级分类
+      <CategorySelector></CategorySelector>
     </el-card>
 
     <el-card style="margin-top:20px">
