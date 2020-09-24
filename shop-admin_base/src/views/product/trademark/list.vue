@@ -99,11 +99,11 @@
       :title="form.id ? '修改品牌' : '添加品牌'"
       :visible.sync="isShowDialog"
     >
-      <el-form :model="form" style="width: 80%">
-        <el-form-item label="品牌名称" :label-width="'100px'">
+      <el-form :model="form" :rules="rules" style="width: 80%" ref="form">
+        <el-form-item label="品牌名称" :label-width="'100px'" prop="tmName">
           <el-input v-model="form.tmName" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="品牌LOGO" :label-width="'100px'">
+        <el-form-item label="品牌LOGO" :label-width="'100px'" prop="logoUrl">
           <!-- action 上传图片的时候的上传接口 -->
           <!-- 
             POST /admin/product/fileUpload 
@@ -173,6 +173,24 @@ export default {
       form: {
         tmName: "",
         logoUrl: "",
+      },
+
+      rules: {
+        tmName: [
+          // trigger 验证规则的触发实际 1. blur:鼠标失去焦点  2.change:内容发生改变 3.最后点击确定时 整体进行验证
+          { required: true, message: "请输入品牌名称", trigger: "blur" },
+          {
+            min: 2,
+            max: 10,
+            message: "长度在 2 到 10 个字符",
+            trigger: "change",
+          },
+        ],
+        logoUrl: [
+          { required: true, message: "请上传图片", trigger: "change" },
+          // 这块 无论写change还是blur 都显示不出图片 最后点击确定进行整体验证的时候才能看到图片
+          // trigger: 'change' 对upload来说看不到这个效果,必须是整体验证的时候才能有验证的错误提示
+        ],
       },
     };
   },
@@ -261,29 +279,39 @@ export default {
       return isJPGOrPNG && isLt500K;
     },
     // 点击确定按钮添加或者修改trademark的请求逻辑
-    async addOrUpdateTrademark() {
-      // 获取参数
-      let trademark = this.form;
-      // 整理参数
+    addOrUpdateTrademark() {
+      // 验证规则
 
-      // 发请求
-      const result = await this.$API.trademark.addOrUpdate(trademark);
+      // this.$refs[formName] formName---指的是form的名字 form身上有form这个方法
+      this.$refs.form.validate(async (valid) => {
+        if (valid) {
+          // 获取参数
+          let trademark = this.form;
+          // 整理参数
 
-      if (result.code === 200) {
-        // 成功干啥
-        // 1.提示 添加或者修改成功
-        this.$message.success(`${trademark.id ? "修改" : "添加"}品牌成功`);
-        // 2.关闭dialog
-        this.isShowDialog = false;
-        // 3.重新获取列表数据展示
-        // 如果是添加 我们默认是添加在最后一页 重新获取数据也是默认拿的是第一页
-        // 但是修改  重新获取数据也应该是获取修改的那一页
-        this.getTrademarkList(trademark.id ? this.page : 1);
-      } else {
-        // 失败干啥
-        // 提示添加或者修改失败
-        this.$message.error(`${trademark.id ? "修改" : "添加"}品牌失败`);
-      }
+          // 发请求
+          const result = await this.$API.trademark.addOrUpdate(trademark);
+
+          if (result.code === 200) {
+            // 成功干啥
+            // 1.提示 添加或者修改成功
+            this.$message.success(`${trademark.id ? "修改" : "添加"}品牌成功`);
+            // 2.关闭dialog
+            this.isShowDialog = false;
+            // 3.重新获取列表数据展示
+            // 如果是添加 我们默认是添加在最后一页 重新获取数据也是默认拿的是第一页
+            // 但是修改  重新获取数据也应该是获取修改的那一页
+            this.getTrademarkList(trademark.id ? this.page : 1);
+          } else {
+            // 失败干啥
+            // 提示添加或者修改失败
+            this.$message.error(`${trademark.id ? "修改" : "添加"}品牌失败`);
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
 
     // 点击删除按钮  messagebox
