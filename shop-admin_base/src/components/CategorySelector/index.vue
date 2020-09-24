@@ -1,5 +1,5 @@
 <template>
-  <el-form :inline="true" :model="cform" class="demo-form-inline">
+  <el-form :inline="true" :model="cform">
   <!-- form 一定要指定一个对象model   用来收集数据 -->
     <el-form-item label="一级分类">
       <el-select v-model="cform.category1Id" placeholder="请选择">
@@ -15,6 +15,19 @@
       </el-select>
     </el-form-item>
     
+      <el-form-item label="二级分类">
+      <el-select v-model="cform.category2Id" placeholder="请选择">
+        <el-option label="区域一" value="shanghai"></el-option>
+        <el-option label="区域二" value="beijing"></el-option>
+      </el-select>
+    </el-form-item>
+
+      <el-form-item label="三级分类">
+      <el-select v-model="cform.category3Id" placeholder="请选择">
+        <el-option label="区域一" value="shanghai"></el-option>
+        <el-option label="区域二" value="beijing"></el-option>
+      </el-select>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -26,7 +39,9 @@ export default {
     return {
       //定义cform
       cform:{
-        category1Id:''
+        category1Id:'',
+        category2Id:'',
+        category3Id:''
       }
     }
   },
