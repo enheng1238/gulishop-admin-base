@@ -14,8 +14,8 @@
           选中一级的时候二级才有数据
           选中二级的时候三级才有数据
          -->
-        <el-option label="区域一" value="shanghai"></el-option>
-        <el-option label="区域二" value="beijing"></el-option>
+        <el-option :label="c1.name" :value="c1.id" v-for="(c1,index) in category1List" :key="c1.id"></el-option>
+        
       </el-select>
     </el-form-item>
     
