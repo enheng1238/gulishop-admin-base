@@ -162,6 +162,21 @@
 export default {
   name: "Trademark",
   data() {
+    // 定义一个函数
+    // value 就是你输入的值 你准备要验证的那个值
+    // callback 通过还是不通过 放行还是不放行
+    // callback 如果不传任何东西 就是放行
+    var validateTmName = (rule, value, callback) => {
+     if(value.length < 2 || value.length > 10 ){
+       callback(new Error('输入的名字必须是2-10个字符'))
+     }else if(value.trim() === ''){
+       callback(new Error('请输入合法的名称不能为空'))
+     }else{
+      //  验证通过 直接放行
+       callback()
+     }
+    };
+
     return {
       page: 1,
       limit: 3,
@@ -179,12 +194,16 @@ export default {
         tmName: [
           // trigger 验证规则的触发实际 1. blur:鼠标失去焦点  2.change:内容发生改变 3.最后点击确定时 整体进行验证
           { required: true, message: "请输入品牌名称", trigger: "blur" },
-          {
-            min: 2,
-            max: 10,
-            message: "长度在 2 到 10 个字符",
-            trigger: "change",
-          },
+          // {
+          //   min: 2,
+          //   max: 10,
+          //   message: "长度在 2 到 10 个字符",
+          //   trigger: "change",
+          // },
+
+          //自定义验证规则
+          // validateTmName 函数 --- 自己定义函数的功能
+          { validator: validateTmName, trigger: "change" },
         ],
         logoUrl: [
           { required: true, message: "请上传图片", trigger: "change" },
