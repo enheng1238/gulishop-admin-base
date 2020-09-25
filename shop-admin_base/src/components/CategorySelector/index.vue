@@ -77,6 +77,9 @@ export default {
         this.cform.category2List = []
         this.cform.category3List = []
 
+          this.$emit('handlerCategory',{categoryId:category1Id,level:1})
+          // 不论点的是哪一级都触发这个回调
+
       const result = await this.$API.category.getCategorys2(category1Id)
 
       if(result.code === 200){
@@ -86,15 +89,25 @@ export default {
 
     // 选中二级分类的时候获取三级分类列表
     async handlerCategory2(category2Id){
+
       // 重新选择二级的时候 把三级清空
         this.cform.category3Id = ''
         this.cform.category3List = []
+
+          this.$emit('handlerCategory',{categoryId:category2Id,level:2})
+
       const result = await this.$API.category.getCategorys3(category2Id)
       if(result.code === 200){
         this.category3List = result.data
       }
-    }
+    },
   
+  // 选中3级分类的时候要把id传给父组件
+  handlerCategory3(category3Id){
+    // 自定义事件 在子组件中触发在父中定义的事件
+    this.$emit('handlerCategory',{categoryId:category3Id,level:3})
+  }
+
   }
 };
 </script>
