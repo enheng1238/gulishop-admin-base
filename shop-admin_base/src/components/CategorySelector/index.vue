@@ -33,7 +33,7 @@
 
       <el-form-item label="三级分类">
       <el-select v-model="cform.category3Id" placeholder="请选择" @change="handlerCategory3">
-         <el-option :label="c3.name" :value="c3.id" v-for="(c3,index) in category2List" :key="c3.id"></el-option>
+         <el-option :label="c3.name" :value="c3.id" v-for="(c3,index) in category3List" :key="c3.id"></el-option>
       </el-select>
     </el-form-item>
   </el-form>
