@@ -8,7 +8,7 @@
 
     <el-card style="margin-top:20px">
       <!-- 列表数据展示的内容 -->
-      列表数据数据
+      <el-button type="primary" icon="el-icon-plus">添加属性</el-button>
     </el-card>
 
   </div>
