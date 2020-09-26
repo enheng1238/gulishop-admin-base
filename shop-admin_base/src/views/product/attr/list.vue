@@ -43,7 +43,9 @@
               icon="el-icon-edit"
               title="修改属性"
               size="mini"
+              @click="showUpdateDiv(row)"
             ></HintButton>
+            <!-- showUpdateDiv 修改的时候要传过去个数据 -->
             <HintButton
               type="danger"
               icon="el-icon-delete"
@@ -102,6 +104,7 @@
 </template>
 
 <script>
+import cloneDeep from 'lodash/cloneDeep'
 export default {
   name: "Attr",
   data() {
@@ -140,6 +143,28 @@ export default {
     };
   },
   methods: {
+    showUpdateDiv(row){
+      this.isShowList = false
+
+      // this.attr = row //踩坑
+
+      //浅拷贝
+      // 基本数据值
+      // 浅拷贝如果里边是基本值的时候，浅拷贝是可以达到我们的需求的
+      // 但是，如果里边一旦有正向数据类型,浅拷贝就不行了
+      // this.attr = {...row} //浅拷贝 这个不能玩 玩不了 因为这次的数据牵扯到了数组,而数组是个对象数据类型，得用深拷贝
+      // 浅拷贝  对于属性名来说是没问题的,修改添加页面和列表页面的属性不是同一个对象，基本值也不是同一个值，但是对于属性值来说
+      // 属性值是在一个数组当中的,浅拷贝的时候，不同对象拷贝内部数组还是同一个数组,也就是说两个对象内部属性值的数组是同一个地址
+      // 在添加页面修改数组其实也是在修改列表页面的数组,因此浅拷贝不行，得换成深拷贝
+
+      // 在element-ui展示数据的时候,我添加的时候把原来的数据传给我添加的数据，我添加里边一修改,列表里边页修改了，此时是需要用到深浅拷贝的，
+      // 何时用到浅拷贝？对象里边如果都是基本值,拿我浅拷贝就可以搞定，如果说对象当中有对象数据类型,那我就需要深拷贝了
+
+      // lodash 里边除了节流还有深浅拷贝的函数
+      
+      this.attr = cloneDeep(row) //深拷贝一份然后赋值给attr
+    },
+
     // 点击列表页的添加属性逻辑
     showAddDiv(){
       this.isShowList = false
