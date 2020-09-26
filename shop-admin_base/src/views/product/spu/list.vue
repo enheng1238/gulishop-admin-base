@@ -29,7 +29,7 @@
          <el-table-column
            label="操作"
            width="width">
-           <template slot="{row,$index}">
+           <template slot-scope="{ row ,$index}">
              <HintButton icon="el-icon-plus" type="primary" size="mini" title="添加SKU"></HintButton>
              <HintButton icon="el-icon-edit" type="warning" size="mini" title="修改SPU"></HintButton>
              <HintButton icon="el-icon-info" type="info" size="mini" title="查看SPU所有的SKU"></HintButton>
