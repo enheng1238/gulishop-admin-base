@@ -3,7 +3,7 @@
     <el-card>
       <!-- 三级分类的组件 -->
       <!-- 自定义事件 在父中绑定一个事件 -->
-      <CategorySelector @handlerCategory="handlerCategory"></CategorySelector>
+      <CategorySelector @handlerCategory="handlerCategory" :isShowList="isShowList" ></CategorySelector>
     </el-card>
 
     <!-- 静态页面是为了收集数据的 -->
@@ -77,7 +77,7 @@
           </el-form-item>
         </el-form>
 
-        <el-button type="primary" icon="el-icon-plus" @click="addAttrValue"
+        <el-button type="primary" icon="el-icon-plus" @click="addAttrValue" :disabled="!attr.attrName"
           >添加属性值</el-button
         >
         <el-button @click="isShowList = true">取消</el-button>

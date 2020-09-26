@@ -1,5 +1,5 @@
 <template>
-  <el-form :inline="true" :model="cform">
+  <el-form :inline="true" :model="cform" :disabled="!isShowList">
   <!-- form 一定要指定一个对象model   用来收集数据 -->
     <el-form-item label="一级分类">
       <el-select v-model="cform.category1Id" placeholder="请选择" @change="handlerCategory1">
@@ -43,6 +43,7 @@
 <script>
 export default {
   name: "CategorySelector",
+  props:['isShowList'],
   data() {
     return {
       //定义cform
