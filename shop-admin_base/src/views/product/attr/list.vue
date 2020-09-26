@@ -88,7 +88,7 @@
             <template slot-scope="{row,$index}">
               <!-- 根据每个属性值当中的isEdit不同显示不一样的结构 -->
               <el-input :ref="$index"  v-if="row.isEdit" v-model="row.valueName" placeholder="请输入属性值" size="mini" @blur="toLook(row)" @keyup.enter.native="toLook(row)"></el-input>
-              <span v-else @click="toEdit(row,$index)">{{row.valueName}}</span>
+              <span v-else @click="toEdit(row,$index)" style="display:block">{{row.valueName}}</span>
             </template>
            
           </el-table-column>
