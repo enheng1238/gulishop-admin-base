@@ -10,7 +10,7 @@
     <el-card style="margin-top: 20px">
       <div v-show="isShowList">
         <!-- 列表数据展示的内容 -->
-      <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id"
+      <el-button type="primary" icon="el-icon-plus" :disabled="!category3Id" @click="showAddDiv"
         >添加属性</el-button>
       <el-table border :data="attrList" style="width: 100%">
         <el-table-column align="center" type="index" label="序号" width="80">
@@ -66,7 +66,7 @@
         </el-form>
 
         <el-button type="primary" icon="el-icon-plus" @click="addAttrValue">添加属性值</el-button>
-        <el-button >取消</el-button>
+        <el-button @click="isShowList = true">取消</el-button>
         <el-table
           :data="attr.attrValueList"
           border
@@ -93,7 +93,7 @@
         </el-table>
 
         <el-button type="primary">保存</el-button>
-        <el-button >取消</el-button>
+        <el-button @click="isShowList = true">取消</el-button>
 
 
       </div>
@@ -110,7 +110,7 @@ export default {
       category2Id: "",
       category3Id: "",
       attrList: [],
-      isShowList:false,
+      isShowList:true,
 
       // 收集的数据
       attr:{
@@ -140,6 +140,11 @@ export default {
     };
   },
   methods: {
+    // 点击列表页的添加属性逻辑
+    showAddDiv(){
+      this.isShowList = false
+    },
+
     // addAttrValue 点击添加属性值的回调
     // 属性值的对象  收集属性值的时候 我们的做法是先在属性值列表当中添加一个属性的对象， 然后上面table就会出现一行数据，只不过都是空的
     addAttrValue(){
