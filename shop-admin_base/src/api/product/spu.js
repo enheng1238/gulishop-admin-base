@@ -63,8 +63,8 @@ export default {
       * index
       */
     //  获取指定分类的SPU分页列表
-     getList(page,limit,categoryId){
-         return request.get(`/admin/product/${page}/${limit}`,{params:{categoryId}})
+     getList(page,limit,category3Id){
+         return request.get(`/admin/product/${page}/${limit}`,{params:{category3Id}})
      }
 
 }

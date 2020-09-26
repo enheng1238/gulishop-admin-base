@@ -1,26 +1,28 @@
 <template>
   <div>
      <el-card>
-       <CategorySelector></CategorySelector>
+       <CategorySelector @handlerCategory="handlerCategory" :isShowList="isShowList"></CategorySelector>
      </el-card>
 
      <el-card style="margin-top:20px">
        <el-button type="primary" icon="el-icon-plus">添加SPU</el-button>
        <el-table
+         :data="spuList"
          border
          style="width: 100%">
          <el-table-column
+           align="center"
            type="index"
            label="序号"
            width="80">
          </el-table-column>
          <el-table-column
-           prop="prop"
+           prop="spuName"
            label="SPU名称"
            width="width">
          </el-table-column>
          <el-table-column
-           prop="prop"
+           prop="description"
            label="SPU描述"
            width="width">
          </el-table-column>
@@ -38,7 +40,7 @@
 
          <!-- @size-change="handleSizeChange"
          @current-change="handleCurrentChange" -->
-         <!-- 分页器居中  style="text-align:center" -->
+         <!-- 分页器居中  -->
        <el-pagination
           style="text-align:center"
          :current-page="1"
@@ -54,6 +56,43 @@
 <script>
 export default {
   name: 'Spu',
+  data() {
+    return {
+      isShowList:true,
+      category1Id:'',
+      category2Id:'',
+      category3Id:'',
+      spuList:[],
+      page:1,
+      limit:3,
+      total:0
+    }
+  },
+  methods:{
+    handlerCategory({categoryId,level}){
+      if(level === 1){
+        this.category2Id = ''
+        this.category3Id = ''
+        this.spuList = []
+        this.category1Id = categoryId
+      }else if(level === 2){
+        this.category3Id = ''
+        this.spuList = []
+        this.category2Id = categoryId
+      }else{
+        this.category3Id = categoryId
+        this.getSpuList()
+      }
+    },
+    async getSpuList(){
+      let {page,limit,category3Id} = this
+      const result = await this.$API.spu.getList(page,limit,category3Id)
+      if(result.code === 200){
+        this.spuList = result.data.records
+        this.total = result.data.total
+      }
+    }
+  }
 }
 </script>
 
