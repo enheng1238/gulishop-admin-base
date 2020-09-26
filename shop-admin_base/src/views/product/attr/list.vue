@@ -125,7 +125,7 @@
           </el-table-column>
         </el-table>
 
-        <el-button type="primary">保存</el-button>
+        <el-button type="primary" @click="save" :disabled="attr.attrValueList.length === 0">保存</el-button>
         <el-button @click="isShowList = true">取消</el-button>
       </div>
     </el-card>
@@ -170,6 +170,49 @@ export default {
     };
   },
   methods: {
+    // 最终需要保存发请求
+    async save(){
+      //拿参数
+      let attr = this.attr
+      // 整理参数
+            // 1.如果属性值没有值，那就是空串，删除这个属性值对象
+            // 2.去除参数中多余的参数，比如自己加的isEdit
+            // 3.如果属性当中属性值列表没有属性对象  不发请求
+            // filter返回的是一个新数组 filter最终返回的是一个布尔值
+
+            // filter 是个函数
+            // 功能: 过滤出数组当中符合自己条件的项
+            // 参数: 回调函数 回调函数的参数是(item,index,arr)  回调函数的返回值是布尔值 (true/false)
+            // 返回值: fliter本身是个函数 它的返回值是个新数组 原数组中的每一项都会调用回调函数,回调函数返回为true的项组成的新数组
+            attr.attrValueList = attr.attrValueList.filter(item => {
+              // 过滤每一项 如果这一项的属性值名称不为空串 顺便就把这一项的isEdit删掉,然后把这一项放在新的数组当中
+              if(item.valueName !== ''){
+                delete item.isEdit
+                return true
+              }
+            })
+
+            if(attr.attrValueList.length === 0) return
+      // 发请求
+      const result = await this.$API.attr.addOrUpdate(attr)
+     
+      if(result.code === 200){
+        // 成功 
+          // 1.提示
+          this.$message.success('保存属性成功')
+          // 2.显示列表页面
+          this.isShowList = true
+          // 3.重新获取属性列表数据
+          this.getAttrList()
+       }else{
+          // 失败
+          // 提示
+          this.$message.error('保存属性失败')
+       }
+      
+    },
+
+
     // input失去焦点或者回车之后变为查看模式
     toLook(row) {
       // 失去焦点的时候或者回车之后我们要判断用户输入数据的合法性
