@@ -37,7 +37,7 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" width="150">
-          <template slot-scope="{ row, $index }">
+            <template slot-scope="{ row, $index }">
               <HintButton
                 type="warning"
                 icon="el-icon-edit"
@@ -45,15 +45,17 @@
                 size="mini"
                 @click="showUpdateDiv(row)"
               ></HintButton>
-            <!-- showUpdateDiv 修改的时候要传过去个数据 -->
-            <HintButton
-              type="danger"
-              icon="el-icon-delete"
-              title="删除属性"
-              size="mini"
-            ></HintButton>
-          </template>
-        </el-table-column>
+
+              <!-- <el-popconfirm :title="`你确定删除${row.attrName}吗？`" @onConfirm="deleteAttr(row)"> -->
+                <HintButton
+                  type="danger"
+                  icon="el-icon-delete"
+                  title="删除属性"
+                  size="mini"
+                ></HintButton>
+              <!-- </el-popconfirm> -->
+            </template>
+          </el-table-column>
       </el-table>
       </div>
 
@@ -84,7 +86,8 @@
             width="width">
             <!-- :data="attr.attrValueList"  row代表的是某一个属性值 -->
             <template slot-scope="{row,$index}">
-              <el-input v-model="row.valueName" placeholder="请输入属性值" size="mini"></el-input>
+              <el-input v-if="row.isEdit" v-model="row.valueName" placeholder="请输入属性值" size="mini"></el-input>
+              <span v-else>{{row.valueName}}</span>
             </template>
            
           </el-table-column>
@@ -165,7 +168,16 @@ export default {
 
       // lodash 里边除了节流还有深浅拷贝的函数
 
-      // this.attr = cloneDeep(row) //深拷贝一份然后赋值给attr
+      this.attr = cloneDeep(row) //深拷贝一份然后赋值给attr
+
+      // 对修改属性的属性值对象添加isEdit,标识数据
+      this.attr.attrValueList.forEach(item => {
+        //  item.isEdit = false//这样写的添加的属性不是响应式属性  后期通过.语法添加的不是响应式属性
+        // 如果一上来在属性就是在data中的,那么它一定是响应式属性
+        // $set 和 
+        // 如果想让它成为响应式 用$set
+        this.$set(item,'isEdit',false)
+      })
     },
 
     // 点击列表页的添加属性逻辑
@@ -187,10 +199,25 @@ export default {
     // addAttrValue 点击添加属性值的回调
     // 属性值的对象  收集属性值的时候 我们的做法是先在属性值列表当中添加一个属性的对象， 然后上面table就会出现一行数据，只不过都是空的
     addAttrValue(){
+      // 为什么push的时候就是响应式的了呢？
+      // 只要用了push 就是响应式的了
+      /**
+       * 变化数组的方法 
+       * Vue将观察数组的变化数组方法包裹起来,以便在调用这些方法时，也能够触发视图更新,这些包裹的方法如下:
+       * 
+       * push()
+       * pop()
+       * shift()
+       * unshift()
+       * sort()
+       * reverse()
+       * 
+       */
       this.attr.attrValueList.push({
          attrId:this.attr.id || undefined,//属性值所属属性的id
         //  id: 0,//新添加的没有id
-         valueName: ""//属性值已经添加到属性值列表当中了，但是这个属性值的名称是空串是为了等待用户去输入输入
+         valueName: "",//属性值已经添加到属性值列表当中了，但是这个属性值的名称是空串是为了等待用户去输入输入
+         isEdit:true,//每一个新添加的属性值对象当中都会添加这么一个属性，代表目前这个属性值是可编辑状态(显示input)
       })
     },
     // 自定义事件 回调函数留在父中
