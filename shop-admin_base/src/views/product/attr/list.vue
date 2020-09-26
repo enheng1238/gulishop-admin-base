@@ -38,13 +38,13 @@
         </el-table-column>
         <el-table-column label="操作" width="150">
           <template slot-scope="{ row, $index }">
-            <HintButton
-              type="warning"
-              icon="el-icon-edit"
-              title="修改属性"
-              size="mini"
-              @click="showUpdateDiv(row)"
-            ></HintButton>
+              <HintButton
+                type="warning"
+                icon="el-icon-edit"
+                title="修改属性"
+                size="mini"
+                @click="showUpdateDiv(row)"
+              ></HintButton>
             <!-- showUpdateDiv 修改的时候要传过去个数据 -->
             <HintButton
               type="danger"
@@ -84,13 +84,16 @@
             width="width">
             <!-- :data="attr.attrValueList"  row代表的是某一个属性值 -->
             <template slot-scope="{row,$index}">
-              <el-input v-model="row.valueName" placeholder="请输入属性值"></el-input>
+              <el-input v-model="row.valueName" placeholder="请输入属性值" size="mini"></el-input>
             </template>
            
           </el-table-column>
             <el-table-column
             label="操作"
             width="width">
+            <template slot-scope="{row,$index}">
+             <HintButton type="danger" icon="el-icon-delete" title="删除属性值" size="mini"></HintButton>
+            </template>
           </el-table-column>
         </el-table>
 
@@ -161,19 +164,20 @@ export default {
       // 何时用到浅拷贝？对象里边如果都是基本值,拿我浅拷贝就可以搞定，如果说对象当中有对象数据类型,那我就需要深拷贝了
 
       // lodash 里边除了节流还有深浅拷贝的函数
-      
-      this.attr = cloneDeep(row) //深拷贝一份然后赋值给attr
+
+      // this.attr = cloneDeep(row) //深拷贝一份然后赋值给attr
     },
 
     // 点击列表页的添加属性逻辑
-    showAddDiv(){
+   showAddDiv(){
       this.isShowList = false
 
       // 解决添加属性值取消后数据还在的bug
       this.attr = {
         attrName:"",
         attrValueList:[],
-        categoryId:0,
+        categoryId:this.category3Id,
+        // 这里的this就是vm了  收集categoryId不能在data中去写 因为data中的this不是vm
         categoryLevel:3,
       };
     },
