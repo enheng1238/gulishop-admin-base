@@ -86,8 +86,9 @@
             width="width">
             <!-- :data="attr.attrValueList"  row代表的是某一个属性值 -->
             <template slot-scope="{row,$index}">
-              <el-input v-if="row.isEdit" v-model="row.valueName" placeholder="请输入属性值" size="mini" @blur="toLook(row)" @keyup.enter.native="toLook(row)"></el-input>
-              <span v-else @click="toEdit(row)">{{row.valueName}}</span>
+              <!-- 根据每个属性值当中的isEdit不同显示不一样的结构 -->
+              <el-input :ref="$index"  v-if="row.isEdit" v-model="row.valueName" placeholder="请输入属性值" size="mini" @blur="toLook(row)" @keyup.enter.native="toLook(row)"></el-input>
+              <span v-else @click="toEdit(row,$index)">{{row.valueName}}</span>
             </template>
            
           </el-table-column>
@@ -178,9 +179,28 @@ export default {
     },
 
     // 点击span 变为编辑模式
-    toEdit(row){
+    toEdit(row,index){
       row.isEdit = true
       // 只要第一次添加时响应式,后面就可以使用点语法  也是响应式
+
+      // 让对应的input自动获取焦点
+      // $refs是一个对象，一般情况下就是 .  一个什么东西
+      // 而现在 index 是一个变量  所以要用中括号语法
+      // 这样就拿到了对应的input
+
+      this.$nextTick(() => {
+         this.$refs[index].focus()
+      })
+     
+      /**
+       * 你一点击 input在v-if
+       * 要从span变成input  , 它是根据数据的改变而渲染input的
+       * 也就是说我这个input还没有渲染完成，你就开始focus了,怎么能找到呢?就是你太快了
+       * nextTick()等你的页面更新完成 
+       * 
+       * 让对应的input自动获取到焦点,必须在nextTick()当中去做,原因是因为页面可能还没有更新完成
+       * 
+       */
     },
 
     showUpdateDiv(row){
@@ -252,6 +272,11 @@ export default {
         //  id: 0,//新添加的没有id
          valueName: "",//属性值已经添加到属性值列表当中了，但是这个属性值的名称是空串是为了等待用户去输入输入
          isEdit:true,//每一个新添加的属性值对象当中都会添加这么一个属性，代表目前这个属性值是可编辑状态(显示input)
+      })
+
+      // 让对应的input自动获取焦点,其实就是新添加的那一个属性值对应的input 永远在列表的最后
+      this.$nextTick(() => {
+        this.$refs[this.attr.attrValueList.length - 1].focus()
       })
     },
     // 自定义事件 回调函数留在父中
