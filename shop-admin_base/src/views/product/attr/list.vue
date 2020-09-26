@@ -86,8 +86,8 @@
             width="width">
             <!-- :data="attr.attrValueList"  row代表的是某一个属性值 -->
             <template slot-scope="{row,$index}">
-              <el-input v-if="row.isEdit" v-model="row.valueName" placeholder="请输入属性值" size="mini"></el-input>
-              <span v-else>{{row.valueName}}</span>
+              <el-input v-if="row.isEdit" v-model="row.valueName" placeholder="请输入属性值" size="mini" @blur="toLook(row)" @keyup.enter.native="toLook(row)"></el-input>
+              <span v-else @click="toEdit(row)">{{row.valueName}}</span>
             </template>
            
           </el-table-column>
@@ -149,6 +149,40 @@ export default {
     };
   },
   methods: {
+    // input失去焦点或者回车之后变为查看模式
+    toLook(row){
+      // 失去焦点的时候或者回车之后我们要判断用户输入数据的合法性
+      // 1.数据必须有
+      if(row.valueName.trim() === ''){
+        this.$message.error('输入的数据不能为空')
+        row.valueName = ''
+        return
+      }
+       // 2.除了是自身以外,不能有相同的 some最终返回一堆true/false  判断是不是每一个项都符合条件 只要有一个符合就为true
+       let isRepeat = this.attr.attrValueList.some(item => {
+         if(item !== row){//除去自身
+          return item.valueName === row.valueName
+         }
+       })
+
+       if(isRepeat){
+        //  提示
+        this.$message.error('输入的数据不能重复')
+        row.valueName = ''
+        return 
+       }
+
+
+
+      row.isEdit = false
+    },
+
+    // 点击span 变为编辑模式
+    toEdit(row){
+      row.isEdit = true
+      // 只要第一次添加时响应式,后面就可以使用点语法  也是响应式
+    },
+
     showUpdateDiv(row){
       this.isShowList = false
 
