@@ -143,7 +143,17 @@ export default {
     // 点击列表页的添加属性逻辑
     showAddDiv(){
       this.isShowList = false
+
+      // 解决添加属性值取消后数据还在的bug
+      this.attr = {
+        attrName:"",
+        attrValueList:[],
+        categoryId:0,
+        categoryLevel:3,
+      };
     },
+
+  
 
     // addAttrValue 点击添加属性值的回调
     // 属性值的对象  收集属性值的时候 我们的做法是先在属性值列表当中添加一个属性的对象， 然后上面table就会出现一行数据，只不过都是空的
