@@ -38,16 +38,17 @@
          </el-table-column>
        </el-table>
 
-         <!-- @size-change="handleSizeChange"
-         @current-change="handleCurrentChange" -->
+        
          <!-- 分页器居中  -->
        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="getSpuList"
           style="text-align:center"
-         :current-page="1"
+         :current-page="page"
          :page-sizes="[3, 5, 10]"
-         :page-size="5"
+         :page-size="limit"
          layout="prev, pager, next, jumper,->, sizes,total"
-         :total="0">
+         :total="total">
        </el-pagination>
      </el-card>
   </div>
@@ -84,13 +85,19 @@ export default {
         this.getSpuList()
       }
     },
-    async getSpuList(){
+    async getSpuList(pagee = 1){
+      this.page = pagee
       let {page,limit,category3Id} = this
       const result = await this.$API.spu.getList(page,limit,category3Id)
       if(result.code === 200){
         this.spuList = result.data.records
         this.total = result.data.total
       }
+    },
+
+    handleSizeChange(size){
+      this.limit = size
+      this.getSpuList(this.page)
     }
   }
 }
