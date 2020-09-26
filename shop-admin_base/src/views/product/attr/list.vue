@@ -51,14 +51,15 @@
                 @click="showUpdateDiv(row)"
               ></HintButton>
 
-              <!-- <el-popconfirm :title="`你确定删除${row.attrName}吗？`" @onConfirm="deleteAttr(row)"> -->
-              <HintButton
-                type="danger"
-                icon="el-icon-delete"
-                title="删除属性"
-                size="mini"
-              ></HintButton>
-              <!-- </el-popconfirm> -->
+              <el-popconfirm :title="`你确定删除${row.attrName}吗？`" @onConfirm="deleteAttr(row)">
+                <HintButton
+                  slot="reference"
+                  type="danger"
+                  icon="el-icon-delete"
+                  title="删除属性"
+                  size="mini"
+                ></HintButton>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -170,6 +171,21 @@ export default {
     };
   },
   methods: {
+    // 删除属性逻辑
+    async deleteAttr(row){
+      //发请求
+      const result = await this.$API.attr.delete(row.id) 
+      //成功
+      if(result.code === 200){
+        this.$message.success('删除属性成功')
+        this.getAttrList()
+      }else{
+        //失败
+        this.$message.error('删除属性失败')
+      }
+      
+    },
+
     // 最终需要保存发请求
     async save(){
       //拿参数
