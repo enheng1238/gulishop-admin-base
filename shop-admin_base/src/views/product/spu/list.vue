@@ -107,7 +107,7 @@ export default {
     showUpdateSpuForm(row){
       this.isShowSkuForm = true
       // 初始化页面数据请求获取 父  数据是在子组件中的
-       this.$refs.spu.initUpdateSpuFormData()
+       this.$refs.spu.initUpdateSpuFormData(row)
       //在父组件中拿到子组件操作它里边的数据 还可以调用它里边的函数
       // 在父中调子里的函数 然后在子里边的函数中发请求
 
@@ -144,7 +144,7 @@ export default {
       this.isShowSpuForm = true
 
       // 初始化页面数据请求获取
-      this.$refs.spu.initAddsSpuFormData()
+      this.$refs.spu.initAddSpuFormData()
     },
    
    // 点击添加sku按钮逻辑

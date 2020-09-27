@@ -84,12 +84,58 @@ export default {
   data() {
       return {
           dialogImageUrl:"",
-          dialogVisble:false
+          dialogVisble:false,
+          // data:{}
+          spuInfo:{},
+          spuImageList:[],
+          trademarkList:[],
       }
   },
   methods: {
-      initAddSpuFormData(){
+      async initAddSpuFormData(){
         //   通过点击父组件当中的添加spu按钮,父组件当中会调用这个函数
+         // http://localhost:9529/dev-api/admin/product/baseTrademark/getTrademarkList
+        const trademarkListResult = await this.$API.trademark.getList()//获取所有的品牌列表
+        if(trademarkListResult.code === 200){
+          this.trademarkList = trademarkListResult.data
+        }
+
+        // http://localhost:9529/dev-api/admin/product/baseSaleAttrList
+        const baseSaleAttrListResult = await this.$API.spu.getSaleList() 
+        if(baseSaleAttrListResult.code === 200){
+          this.baseSaleAttrList = baseSaleAttrListResult.data
+        }
+
+
+
+      },
+
+      async initUpdateSpuFormData(row){
+        // http://localhost:9529/dev-api/admin/product/getSpuById/1507
+        // 获取指定id的SPU信息（获取某一个spu详情）get(id)
+        const result = await this.$API.spu.get(row.id) //获取当前修改的这个spu的详情
+        if(result.code === 200){
+          this.spuInfo = result.data
+        }
+
+        // http://localhost:9529/dev-api/admin/product/spuImageList/1507
+        // 获取指定SPU的id对应的图片列表getSpuImageList (skuId)
+        const imageListResult = await this.$API.sku.getSpuImageList(row.id)//获取当前SPU的图片列表
+        if(imageListResult.code === 200){
+          this.spuImageList = imageListResult.data
+        }
+
+        // http://localhost:9529/dev-api/admin/product/baseTrademark/getTrademarkList
+        const trademarkListResult = await this.$API.trademark.getList()//获取所有的品牌列表
+        if(trademarkListResult.code === 200){
+          this.trademarkList = trademarkListResult.data
+        }
+
+        // http://localhost:9529/dev-api/admin/product/baseSaleAttrList
+        const baseSaleAttrListResult = await this.$API.spu.getSaleList() 
+        if(baseSaleAttrListResult.code === 200){
+          this.baseSaleAttrList = baseSaleAttrListResult.data
+        }
       },
 
       handleRemove(file,fileList){
